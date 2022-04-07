@@ -27,6 +27,9 @@ protected:
 	void MoveVertical(float Value);
 	void MoveHorizontal(float Value);
 
+	/** always look mouse cursor in e**/
+	void rotateToMouseLocation();
+
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
 

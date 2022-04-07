@@ -17,11 +17,7 @@ void AZombieSurvivorPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	// keep updating the destination every tick while desired
-	if (bMoveToMouseCursor)
-	{
-		MoveToMouseCursor();
-	}
+	rotateToMouseLocation();
 }
 
 void AZombieSurvivorPlayerController::SetupInputComponent()
@@ -56,6 +52,17 @@ void AZombieSurvivorPlayerController::MoveVertical(float Value)
 void AZombieSurvivorPlayerController::MoveHorizontal(float Value)
 {
 	GetPawn()->AddMovementInput(FVector::YAxisVector, Value);
+}
+
+void AZombieSurvivorPlayerController::rotateToMouseLocation()
+{
+	if (AZombieSurvivorCharacter* MyPawn = Cast<AZombieSurvivorCharacter>(GetPawn()))
+	{
+		FVector vector = MyPawn->GetCursorToWorld()->GetComponentLocation() - MyPawn->GetActorLocation();
+		
+		MyPawn->SetActorRotation(FRotator(0, vector.Rotation().Yaw, 0));
+	}
+
 }
 
 void AZombieSurvivorPlayerController::MoveToMouseCursor()
