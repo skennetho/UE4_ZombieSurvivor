@@ -75,3 +75,13 @@ DerivedDataCache/*
 
 # Large Essets
 Content/*
+
+# Imported Contents
+Source/FBX/*
+Source/Maya/*
+Source/Motionbuilder/*
+Source/SKMannequin_A_Pose/*
+Source/SKMannequin_T_Pose/*
+SK_Mannequin_A_Pose_README.txt
+SK_Mannequin_T_Pose_README.txt
+UE4_MocapOnline_Tech_Notes.txt

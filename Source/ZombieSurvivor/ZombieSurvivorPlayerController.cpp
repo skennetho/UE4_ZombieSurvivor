@@ -13,10 +13,12 @@ AZombieSurvivorPlayerController::AZombieSurvivorPlayerController()
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 
+
 void AZombieSurvivorPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
+	// TODO: change it to "look at target"
 	rotateToMouseLocation();
 }
 
@@ -28,20 +30,10 @@ void AZombieSurvivorPlayerController::SetupInputComponent()
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AZombieSurvivorPlayerController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &AZombieSurvivorPlayerController::OnSetDestinationReleased);
 
-	// support touch devices 
-	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AZombieSurvivorPlayerController::MoveToTouchLocation);
-	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AZombieSurvivorPlayerController::MoveToTouchLocation);
-
-	InputComponent->BindAction("ResetVR", IE_Pressed, this, &AZombieSurvivorPlayerController::OnResetVR);
-
 	// test: bind axis
 	InputComponent->BindAxis(TEXT("MoveHorizontal"), this, &AZombieSurvivorPlayerController::MoveHorizontal);
 	InputComponent->BindAxis(TEXT("MoveVertical"), this, &AZombieSurvivorPlayerController::MoveVertical);
-}
 
-void AZombieSurvivorPlayerController::OnResetVR()
-{
-	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
 void AZombieSurvivorPlayerController::MoveVertical(float Value)
@@ -65,45 +57,6 @@ void AZombieSurvivorPlayerController::rotateToMouseLocation()
 
 }
 
-void AZombieSurvivorPlayerController::MoveToMouseCursor()
-{
-	if (UHeadMountedDisplayFunctionLibrary::IsHeadMountedDisplayEnabled())
-	{
-		if (AZombieSurvivorCharacter* MyPawn = Cast<AZombieSurvivorCharacter>(GetPawn()))
-		{
-			if (MyPawn->GetCursorToWorld())
-			{
-				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, MyPawn->GetCursorToWorld()->GetComponentLocation());
-			}
-		}
-	}
-	else
-	{
-		// Trace to see what is under the mouse cursor
-		FHitResult Hit;
-		GetHitResultUnderCursor(ECC_Visibility, false, Hit);
-
-		if (Hit.bBlockingHit)
-		{
-			// We hit something, move there
-			SetNewMoveDestination(Hit.ImpactPoint);
-		}
-	}
-}
-
-void AZombieSurvivorPlayerController::MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	FVector2D ScreenSpaceLocation(Location);
-
-	// Trace to see what is under the touch location
-	FHitResult HitResult;
-	GetHitResultAtScreenPosition(ScreenSpaceLocation, CurrentClickTraceChannel, true, HitResult);
-	if (HitResult.bBlockingHit)
-	{
-		// We hit something, move there
-		SetNewMoveDestination(HitResult.ImpactPoint);
-	}
-}
 
 void AZombieSurvivorPlayerController::SetNewMoveDestination(const FVector DestLocation)
 {
